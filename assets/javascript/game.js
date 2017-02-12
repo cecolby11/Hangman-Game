@@ -5,47 +5,65 @@ var browser = {
   
   updateWinsOnScreen: function(){
     var element = document.getElementById("winsDisplay");
-    element.textContent = winCounter;
+    element.textContent = setup.winCounter;
   },
 
   updateWordOnScreen: function(){
     var element = document.getElementById("wordBeingGuessed");
-    element.textContent = wordProgressDisplay.join(" ");
+    element.textContent = setup.wordProgressDisplay.join(" ");
   }, 
 
   updateGuessesRemOnScreen: function() {
     var element = document.getElementById("guessesRemaining");
-    element.textContent = guessesRemaining;
+    element.textContent = setup.guessesRemaining;
   },
 
   updateLettersGuessedOnScreen: function() {
     var element = document.getElementById("lettersGuessed");
-    element.textContent = lettersGuessed;
+    element.textContent = setup.lettersGuessed;
   }
 
 };
 
-// array to hold letters guessed 
-var lettersGuessed = [];
-// array to hold blank spaces or letters for the word in question
-var wordProgressDisplay = [];
-// var for number of guesses remaining. starts at 12. 
-var guessesRemaining = 12;
-//var to hold number of wins! starts at 0. 
-var winCounter = 0; 
-// array of words that fit the theme
-var wordOptions = ["Buddy", "Ella", "Duke", "Miles"];
-// computer randomly selects word from wordOptions, store in var
-var computerChoice = wordOptions[Math.floor(Math.random() * wordOptions.length)];
-// guesses will be lowercase, make word match
-computerChoice = computerChoice.toLowerCase();
-console.log("computer choice: " + computerChoice);
-// add enough blanks for the word to wordProgressDisplay array for display 
-for(var i = 0; i < computerChoice.length; i++) {
-  wordProgressDisplay.push("__");
-}
-// display blanks to screen. use join to separate with spaces and without commas in display
-alert("ok here's your word: " + wordProgressDisplay.join(" "));
+//new game object (properties/functions for resetting)
+var setup = {
+  // array to hold letters guessed
+  "lettersGuessed": [],
+  // array to hold blank spaces or letters for the word in question
+  "wordProgressDisplay": [],
+  // var for number of guesses remaining. starts at 12. 
+  "guessesRemaining": 12,
+  //var to hold number of wins! starts at 0. 
+  "winCounter": 0,
+  // array of words that fit the theme
+  "wordOptions": ["Buddy", "Ella", "Duke", "Miles"],
+  //vars to store current computerChoice and index for removal later
+  "computerChoice":"",
+  "computerChoiceIndex":0,
+
+  selectNewWord: function() {
+    // computer randomly selects word from wordOptions, 
+    // guesses will be lowercase, make computerChoice lower
+    this.computerChoice = this.wordOptions[Math.floor(Math.random() * this.wordOptions.length)].toLowerCase();
+    this.computerChoiceIndex = this.wordOptions.indexOf(this.computerChoice);
+    console.log("computer choice: " + this.computerChoice);
+  },
+
+  fillWithBlanks: function() {
+    // add enough blanks for the word to wordProgressDisplay array for display 
+    for(var i = 0; i < this.computerChoice.length; i++) {
+      this.wordProgressDisplay.push("__");
+    }
+    // display blanks to screen.
+    // use join to separate with spaces and without commas
+    alert("ok here's your word: " + this.wordProgressDisplay.join(" "));
+  }
+};
+
+setup.selectNewWord();
+setup.fillWithBlanks();
+
+
 
 // gameplay - User guesses letter; tell game to pay attention to keyup event
 
@@ -73,7 +91,7 @@ function validateInput(key) {
     return false;
   }
   // 3. wasn't guessed before or in the word
-  else if(lettersGuessed.includes(key) || wordProgressDisplay.includes(key)) {
+  else if(setup.lettersGuessed.includes(key) || setup.wordProgressDisplay.includes(key)) {
     alert(key + " was already guessed; try another letter.")
     return false;
   }
@@ -83,7 +101,7 @@ function validateInput(key) {
 }
 
 function checkGuess(letter) {
-  if(computerChoice.includes(letter)){
+  if(setup.computerChoice.includes(letter)){
     findIndexInWord(letter);
   } 
   // if no, then add it to the "letters guessed array" 
@@ -94,8 +112,8 @@ function checkGuess(letter) {
 }
 
 function findIndexInWord(letter) {
-  for(var i = 0; i < computerChoice.length; i++) {
-    if(letter === computerChoice.charAt(i)) {
+  for(var i = 0; i < setup.computerChoice.length; i++) {
+    if(letter === setup.computerChoice.charAt(i)) {
       // insert @ index in wordProgressDisplay. 
       // don't update letters guessed or guesses remaining.
       updateWordProgressDisplay(letter, i);
@@ -106,31 +124,53 @@ function findIndexInWord(letter) {
 
 function updateWordProgressDisplay(letter, index) {
   // use: splice(index, how many to be removed, items to add)
-  wordProgressDisplay.splice(index, 1, letter);
+  setup.wordProgressDisplay.splice(index, 1, letter);
   browser.updateWordOnScreen();
   // letters guessed shouldn't be updated: 
 }
 
 function updateLettersGuessed(letter) {
-  lettersGuessed.push(letter);
+  setup.lettersGuessed.push(letter);
   browser.updateLettersGuessedOnScreen();
 }
 
 function updateGuessesRemaining() {
-  guessesRemaining--;
+  setup.guessesRemaining--;
   browser.updateGuessesRemOnScreen();
 }
 
 function winLoseWatcher(){
   // check if WIN (word is totally guessed (no blanks left))
-  if(!(wordProgressDisplay.includes("__"))){
-    winCounter++;
+  if(!(setup.wordProgressDisplay.includes("__"))){
+    setup.winCounter++;
     browser.updateWinsOnScreen();
+    //start new game
+    newGameReset();
   } 
   // check if LOSS (they haven't won and guesses remaining reaches 0)
-  else if(guessesRemaining === 0) {
+  else if(setup.guessesRemaining === 0) {
     console.log("YOU LOSE :(");
+    //start new game
+    newGameReset();
   }
+}
+
+function newGameReset() {
+  //reset game variables EXCEPT winCounter
+  setup.lettersGuessed = [];
+  setup.wordProgressDisplay = [];
+  setup.guessesRemaining = 12;
+
+  //if we've gone through all words, reset array
+  if(setup.wordOptions.length === 0){
+    setup.wordOptions = ["Buddy", "Ella", "Duke", "Miles"];
+  } else {
+    //else remove the word from the options array using computerChoiceIndex so it isn't used again until all words used
+    setup.wordOptions.splice(setup.computerChoiceIndex,1);
+  }
+
+  setup.selectNewWord();
+  setup.fillWithBlanks();
 }
 
 
