@@ -43,9 +43,10 @@ var setup = {
 
   selectNewWord: function() {
     // computer randomly selects word from wordOptions, 
-    // guesses will be lowercase, make computerChoice lower
-    this.computerChoice = this.wordOptions[Math.floor(Math.random() * this.wordOptions.length)].toLowerCase();
+    this.computerChoice = this.wordOptions[Math.floor(Math.random() * this.wordOptions.length)];
     this.computerChoiceIndex = this.wordOptions.indexOf(this.computerChoice);
+    // guesses will be lowercase, make computer choice lower after storing index. 
+    this.computerChoice = this.computerChoice.toLowerCase();
     console.log("computer choice: " + this.computerChoice);
   },
 
@@ -57,12 +58,34 @@ var setup = {
     // display blanks to screen.
     // use join to separate with spaces and without commas
     alert("ok here's your word: " + this.wordProgressDisplay.join(" "));
+  },
+
+  newGameReset: function() {
+    // first remove the word from the options array using computerChoiceIndex so it isn't used again until all words used
+    console.log("index was at: " + this.computerChoiceIndex);
+    this.wordOptions.splice(this.computerChoiceIndex,1);
+    console.log("new word options: " + this.wordOptions);
+    // if we've gone through all words, then reset array
+    if(this.wordOptions.length === 0){
+      this.wordOptions = ["Buddy", "Ella", "Duke", "Miles"];
+    } 
+
+    //reset game variables and update on screen EXCEPT winCounter
+    this.lettersGuessed = [];
+    browser.updateLettersGuessedOnScreen();
+
+    this.guessesRemaining = 12;
+    browser.updateGuessesRemOnScreen();
+
+    this.wordProgressDisplay = [];
+    this.selectNewWord();
+    this.fillWithBlanks();
+    browser.updateWordOnScreen();
   }
 };
 
 setup.selectNewWord();
 setup.fillWithBlanks();
-
 
 
 // gameplay - User guesses letter; tell game to pay attention to keyup event
@@ -72,111 +95,93 @@ document.onkeyup = function(e) {
   var playerGuess = e.key;
   console.log("player guess: " + playerGuess);
   // check that it's allowable. if so, returns true 
-  if(validateInput(playerGuess)){
+  if(gameplay.validateInput(playerGuess)){
     // process guess
-    checkGuess(playerGuess);
-    winLoseWatcher();
+    gameplay.checkGuess(playerGuess);
+    gameplay.winLoseWatcher();
   }
 }
 
-// helper functions 
+var gameplay = {
+  validateInput: function(key) {
+    var aToZ = /^[a-z]+$/;
+    // 1. TODO: if special key like meta, then ignore completely 
 
-function validateInput(key) {
-  var aToZ = /^[a-z]+$/;
-  // 1. if special key like meta, then ignore completely 
-
-  // 2. guess must be a-z
-  if(!(key.match(aToZ))){
-    alert("Invalid key. Guess must be a letter a-z.");
-    return false;
-  }
-  // 3. wasn't guessed before or in the word
-  else if(setup.lettersGuessed.includes(key) || setup.wordProgressDisplay.includes(key)) {
-    alert(key + " was already guessed; try another letter.")
-    return false;
-  }
-  else {
-    return true;
-  }
-}
-
-function checkGuess(letter) {
-  if(setup.computerChoice.includes(letter)){
-    findIndexInWord(letter);
-  } 
-  // if no, then add it to the "letters guessed array" 
-  else {
-    updateLettersGuessed(letter);
-    updateGuessesRemaining();
-  }
-}
-
-function findIndexInWord(letter) {
-  for(var i = 0; i < setup.computerChoice.length; i++) {
-    if(letter === setup.computerChoice.charAt(i)) {
-      // insert @ index in wordProgressDisplay. 
-      // don't update letters guessed or guesses remaining.
-      updateWordProgressDisplay(letter, i);
+    // 2. guess must be a-z
+    if(!(key.match(aToZ))){
+      alert("Invalid key. Guess must be a letter a-z.");
+      return false;
     }
-    // NOTE: don't break from for-loop even if we've found the letter, bc could be in the word multiple times
+    // 3. wasn't guessed before or in the word
+    else if(setup.lettersGuessed.includes(key) || setup.wordProgressDisplay.includes(key)) {
+      alert(key + " was already guessed; try another letter.")
+      return false;
+    }
+    else {
+      return true;
+    }
+  },
+
+  updateWordProgressDisplay: function(letter, index) {
+    // use: splice(index, how many to be removed, items to add)
+    setup.wordProgressDisplay.splice(index, 1, letter);
+    browser.updateWordOnScreen();
+    // letters guessed shouldn't be updated: 
+  },
+
+  findIndexInWord: function(letter) {
+    for(var i = 0; i < setup.computerChoice.length; i++) {
+      if(letter === setup.computerChoice.charAt(i)) {
+        // insert @ index in wordProgressDisplay. 
+        // don't update letters guessed or guesses remaining.
+        this.updateWordProgressDisplay(letter, i);
+      }
+      // NOTE: don't break from for-loop even if we've found the letter, bc could be in the word multiple times
+    }
+  },
+
+  updateLettersGuessed: function(letter) {
+    setup.lettersGuessed.push(letter);
+    browser.updateLettersGuessedOnScreen();
+  },
+
+  updateGuessesRemaining: function() {
+    setup.guessesRemaining--;
+    browser.updateGuessesRemOnScreen();
+  },
+
+  checkGuess: function(letter) {
+    if(setup.computerChoice.includes(letter)){
+      this.findIndexInWord(letter);
+    } 
+    // if no, then add it to the "letters guessed array" 
+    else {
+      this.updateLettersGuessed(letter);
+      this.updateGuessesRemaining();
+    }
+  },
+
+  winLoseWatcher: function(){
+    // check if WIN (word is totally guessed (no blanks left))
+    if(!(setup.wordProgressDisplay.includes("__"))){
+      setup.winCounter++;
+      browser.updateWinsOnScreen();
+      //start new game
+      setup.newGameReset();
+    } 
+    // check if LOSS (they haven't won and guesses remaining reaches 0)
+    else if(setup.guessesRemaining === 0) {
+      console.log("YOU LOSE :(");
+      //start new game
+      setup.newGameReset();
+    }
   }
-}
 
-function updateWordProgressDisplay(letter, index) {
-  // use: splice(index, how many to be removed, items to add)
-  setup.wordProgressDisplay.splice(index, 1, letter);
-  browser.updateWordOnScreen();
-  // letters guessed shouldn't be updated: 
-}
-
-function updateLettersGuessed(letter) {
-  setup.lettersGuessed.push(letter);
-  browser.updateLettersGuessedOnScreen();
-}
-
-function updateGuessesRemaining() {
-  setup.guessesRemaining--;
-  browser.updateGuessesRemOnScreen();
-}
-
-function winLoseWatcher(){
-  // check if WIN (word is totally guessed (no blanks left))
-  if(!(setup.wordProgressDisplay.includes("__"))){
-    setup.winCounter++;
-    browser.updateWinsOnScreen();
-    //start new game
-    newGameReset();
-  } 
-  // check if LOSS (they haven't won and guesses remaining reaches 0)
-  else if(setup.guessesRemaining === 0) {
-    console.log("YOU LOSE :(");
-    //start new game
-    newGameReset();
-  }
-}
-
-function newGameReset() {
-  //reset game variables EXCEPT winCounter
-  setup.lettersGuessed = [];
-  setup.wordProgressDisplay = [];
-  setup.guessesRemaining = 12;
-
-  //if we've gone through all words, reset array
-  if(setup.wordOptions.length === 0){
-    setup.wordOptions = ["Buddy", "Ella", "Duke", "Miles"];
-  } else {
-    //else remove the word from the options array using computerChoiceIndex so it isn't used again until all words used
-    setup.wordOptions.splice(setup.computerChoiceIndex,1);
-  }
-
-  setup.selectNewWord();
-  setup.fillWithBlanks();
-}
+};
 
 
-// TODO: 
 
-// new game after win or loss declared
+
 
 // DO THESE LATER: 
 
@@ -188,4 +193,3 @@ function newGameReset() {
 
 // css styling
 
-// if they've already guessed a letter, alert them or don't let them keep guessing it! (shouldn't make number of guesses keep decreasing)
