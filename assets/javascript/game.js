@@ -1,5 +1,31 @@
 // setup
 
+//object with properties/functions for on-screen things
+var browser = {
+  
+  updateWinsOnScreen: function(){
+    var element = document.getElementById("winsDisplay");
+    element.textContent = winCounter;
+  },
+
+  updateWordOnScreen: function(){
+    var element = document.getElementById("wordBeingGuessed");
+    element.textContent = wordProgressDisplay.join(" ");
+  }, 
+
+  updateGuessesRemOnScreen: function() {
+    var element = document.getElementById("guessesRemaining");
+    element.textContent = guessesRemaining;
+  },
+
+  updateLettersGuessedOnScreen: function() {
+    var element = document.getElementById("lettersGuessed");
+    element.textContent = lettersGuessed;
+  }
+
+};
+
+
 // array to hold letters guessed 
 var lettersGuessed = [];
 // array to hold blank spaces or letters for the word in question
@@ -35,7 +61,7 @@ document.onkeyup = function(e) {
 
 //helper functions 
 
-checkGuess = function(playerGuess) {
+function checkGuess(playerGuess) {
   if(computerChoice.includes(playerGuess)){
     findIndexInWord(playerGuess);
   } 
@@ -47,7 +73,7 @@ checkGuess = function(playerGuess) {
   }
 }
 
-findIndexInWord = function(letter) {
+function findIndexInWord(letter) {
   for(var i = 0; i < computerChoice.length; i++) {
     if(letter === computerChoice.charAt(i)) {
       // insert @ index in wordProgressDisplay. 
@@ -58,28 +84,29 @@ findIndexInWord = function(letter) {
   }
 }
 
-updateWordProgressDisplay = function(letter, index) {
+function updateWordProgressDisplay(letter, index) {
   //use: splice(index, how many to be removed, items to add)
   wordProgressDisplay.splice(index, 1, letter);
   alert("here's what you've got now: " + wordProgressDisplay.join(" "));
+  browser.updateWordOnScreen();
   //letters guessed shouldn't be updated: 
 }
 
-updateLettersGuessed = function(letter) {
+function updateLettersGuessed(letter) {
   lettersGuessed.push(letter);
-  console.log("letters guessed: " + lettersGuessed);
+  browser.updateLettersGuessedOnScreen();
 }
 
-updateGuessesRemaining = function() {
+function updateGuessesRemaining() {
   guessesRemaining--;
-  console.log("guesses remaining: " + guessesRemaining);
+  browser.updateGuessesRemOnScreen();
 }
 
-winLoseWatcher = function() {
+function winLoseWatcher(){
   //check if WIN (word is totally guessed (no blanks left))
   if(!(wordProgressDisplay.includes("__"))){
     winCounter++;
-    console.log("YOU WIN! number of wins: " + winCounter);
+    browser.updateWinsOnScreen();
   } 
   //check if LOSS (they haven't won and guesses remaining reaches 0)
   else if(guessesRemaining === 0) {
