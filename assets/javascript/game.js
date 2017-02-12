@@ -57,7 +57,10 @@ var setup = {
     }
     // display blanks to screen.
     // use join to separate with spaces and without commas
-    alert("ok here's your word: " + this.wordProgressDisplay.join(" "));
+    console.log(this.wordProgressDisplay.join(" "));
+
+    browser.updateWordOnScreen();
+    //alert("ok here's your word: " + this.wordProgressDisplay.join(" "));
   },
 
   newGameReset: function() {
@@ -84,39 +87,27 @@ var setup = {
   }
 };
 
-setup.selectNewWord();
-setup.fillWithBlanks();
-
-
-// gameplay - User guesses letter; tell game to pay attention to keyup event
-
-document.onkeyup = function(e) {
-  // save key pressed as variable
-  var playerGuess = e.key;
-  console.log("player guess: " + playerGuess);
-  // check that it's allowable. if so, returns true 
-  if(gameplay.validateInput(playerGuess)){
-    // process guess
-    gameplay.checkGuess(playerGuess);
-    gameplay.winLoseWatcher();
-  }
-}
-
 var gameplay = {
-  validateInput: function(key) {
-    var aToZ = /^[a-z]+$/;
-    // 1. TODO: if special key like meta, then ignore completely 
+  validateInput: function(event) {
 
-    // 2. guess must be a-z
-    if(!(key.match(aToZ))){
+    // 1. ignore special keys; special function keys have keycodes 0-48, meta = multiple keys pressed
+    if(event.keyCode < 48 || event.key === "Meta"){
+      console.log("ignoring special key")
+      return false;
+    }
+
+    // 2. a-z guesses only; a=65, z=90
+    else if(event.keyCode < 65 || event.keyCode > 90){
       alert("Invalid key. Guess must be a letter a-z.");
       return false;
     }
+
     // 3. wasn't guessed before or in the word
-    else if(setup.lettersGuessed.includes(key) || setup.wordProgressDisplay.includes(key)) {
-      alert(key + " was already guessed; try another letter.")
+    else if(setup.lettersGuessed.includes(event.key) || setup.wordProgressDisplay.includes(event.key)) {
+      alert(event.key + " was already guessed; try another letter.")
       return false;
     }
+
     else {
       return true;
     }
@@ -179,17 +170,42 @@ var gameplay = {
 
 };
 
+// actual user play: 
 
+setup.selectNewWord();
+setup.fillWithBlanks();
+// tell game to pay attention to keyup event (user guesses letter)
+document.onkeyup = function(e) {
+  // save key pressed as variable
+  var playerGuess = e.key;
+  // just in case they capitalized guess
+  var playerGuess = playerGuess.toLowerCase()
+  console.log("player input: " + playerGuess);
+
+  // check that key code is allowable. if so, returns true 
+  if(gameplay.validateInput(e)){
+    // process guess
+    gameplay.checkGuess(playerGuess);
+    gameplay.winLoseWatcher();
+  }
+}
+
+// //====== For Inner HTML instead of getElement/textContent: ======
+// var html = "<h2>Press any key to get started</h2>" + 
+//           "<p>Wins: " + setup.winCounter + "</p>" + 
+//           "<p> Ok here's your word: " + setup.wordProgressDisplay.join(" ") + "</p>" + 
+//           "<p>Guesses Remaining: " + setup.guessesRemaining + "</p>" +
+//           "<p>Letters Guessed: " + setup.lettersGuessed+ "<p>";
+
+// document.querySelector("#game").innerHTML = html;
 
 
 
 // DO THESE LATER: 
 
-//need to not track keyup when we refresh the page. how to ignore special keys??
 
 // pick a theme - update array with new words if necessary 
 
 // initial display of things on the screen
 
 // css styling
-
