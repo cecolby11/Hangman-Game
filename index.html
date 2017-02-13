@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Hangman</title>
+  <title>Hangman!</title>
   
+  <link href="https://fonts.googleapis.com/css?family=Lobster|Courgette" rel="stylesheet">
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
@@ -13,15 +15,20 @@
 <body>
 <div class="page">
 
-  <header>
-    Let's play hangman! 
-  </header>
-
   <!-- main container -->
   <div class="container main_content">
     
+     <div class="row">
+          <div class="col-md-12">
+            <div class="photo_narrow">
+              <img src="assets/images/vinyl.jpg" alt="vinyl photo">
+              <h2>Let's play hangman!</h2>
+            </div>
+          </div>
+        </div>
+        <!-- /.row -->
 
-    <!-- row 1 (instruction alert)-->
+    <!-- row (instruction alert)-->
     <div class="row">
       <div class="col-md-12">
         <div class="alert alert-info" role="alert"" id="instructionContainer">
@@ -29,10 +36,10 @@
         </div>
       </div>
     </div>
-    <!-- /.row 1 (instruction alert) -->
+    <!-- /.row  (instruction alert) -->
       
 
-    <!-- row 2 (content) -->
+    <!-- row  (content) -->
     <div class="row">
 
       <!-- game column-->
@@ -43,7 +50,7 @@
           <div class="row">
 
             <!-- word guessing col -->
-            <div class="col-md-9">
+            <div class="col-md-8 col-sm-12">
               <div class="word">
                 <h3>I'm thinking of a word...</h3>
                 <p id="wordBeingGuessed"></p>
@@ -52,7 +59,7 @@
             <!-- /.word guessing col -->
 
             <!-- guess/letters info col-->
-            <div class="col-md-3">
+            <div class="col-md-4 col-sm-12">
               <div class="row">
                 <div class="col-md-12">
                   <div class="guess remaining">
@@ -82,53 +89,59 @@
 
       <!-- score panel column-->
       <div class="col-md-3">
-        <!-- panel -->
-        <div class="panel panel-default score-panel">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- panel -->
+            <div class="panel panel-default score-panel">
 
-          <div class="panel-heading">
-            <div class="row">
-              <div class="col-md-6 col-xs-6">
-                <h3>Wins</h3>
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-md-6 col-xs-6">
+                    <h3>Wins</h3>
+                  </div>
+                  <div class="col-md-6 col-xs-6">
+                    <h3>Losses</h3>
+                  </div>
+                </div>
               </div>
-              <div class="col-md-6 col-xs-6">
-                <h3>Losses</h3>
+
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-6 col-xs-6 wins-col">
+                    <p id="winsDisplay"></p>
+                  </div>
+                  <div class="col-md-6 col-xs-6 losses-col">
+                    <p id="lossesDisplay"></p>
+                  </div>
+                </div>
               </div>
+
             </div>
+            <!-- /.panel -->
           </div>
-
-          <div class="panel-body">
-            <div class="row">
-              <div class="col-md-6 col-xs-6 wins-col">
-                <h3 id="winsDisplay"></h3>
-              </div>
-              <div class="col-md-6 col-xs-6 losses-col">
-                <h3 id="lossesDisplay"></h3>
-              </div>
-            </div>
-          </div>
-
         </div>
-        <!-- /.panel -->
+        <!-- /.row -->
+
       </div> 
       <!-- /.score panel column-->
 
 
     </div> 
-    <!-- /.row 2 (content) -->
+    <!-- /.row (content) -->
 
   </div> 
   <!-- /.main container-->
 
   <footer>
     <div class="container">
-      <!-- row 2 -->
+      <!-- row  -->
       <div class="row"> 
         <div class="col-md-12">
           <!-- &#169; is character reference for copyright symbol -->
           &#169; Copyright 2017 Casey Colby
         </div>
       </div> 
-      <!-- /.row 2 -->
+      <!-- /.row  -->
     </div> 
     <!-- /.container -->
 

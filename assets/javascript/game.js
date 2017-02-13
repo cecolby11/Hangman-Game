@@ -28,7 +28,7 @@ var browser = {
 
   updateLettersGuessedOnScreen: function() {
     var element = document.getElementById("lettersGuessed");
-    element.textContent = setup.lettersGuessed;
+    element.textContent = setup.lettersGuessed.join(" ");
   },
 
   showHideInstruction: function(text) {
@@ -225,9 +225,6 @@ document.onkeyup = function(e) {
     setup.newGameReset();
   }
   else { 
-    browser.instructionHidden = true; //hide
-    browser.showHideInstruction(browser.welcomeText);
-
     // save key pressed as variable
     var playerGuess = e.key;
     // just in case they capitalized guess
@@ -236,6 +233,9 @@ document.onkeyup = function(e) {
 
     // check that key code is allowable. if so, returns true 
     if(gameplay.validateInput(e)){
+      browser.instructionHidden = true; //hide
+      browser.showHideInstruction(browser.welcomeText);
+
       // process guess
       gameplay.checkGuess(playerGuess);
       gameplay.winLoseWatcher();
