@@ -18,7 +18,7 @@ var browser = {
 
   updateWordOnScreen: function(){
     var element = document.getElementById("wordBeingGuessed");
-    element.textContent = setup.wordProgressDisplay.join(" ");
+    element.textContent = setup.wordProgressDisplay.join(" ").toUpperCase();
     element.style.color = ""; //reset from red to the css instructions
   }, 
 
@@ -29,7 +29,8 @@ var browser = {
 
   updateLettersGuessedOnScreen: function() {
     var element = document.getElementById("lettersGuessed");
-    element.textContent = setup.lettersGuessed.join(" ");
+    // note: stored as lower case, displayed as upper case on screen
+    element.textContent = setup.lettersGuessed.join(" ").toUpperCase();
   },
 
   showHideInstruction: function(text) {
@@ -46,7 +47,7 @@ var browser = {
 
   revealAnswer: function() {
     var element = document.getElementById("wordBeingGuessed");
-    element.textContent = setup.computerChoice;
+    element.textContent = setup.computerChoice.toUpperCase();
     element.style.color = "red";
   },
 
