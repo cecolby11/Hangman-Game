@@ -156,17 +156,21 @@ var setup = {
 };
 
 var gameplay = {
-  validateInput: function(event) {
-    // 1. ignore special keys except space; special function keys have keycodes 0-48, meta = multiple keys pressed
+  // returns a Bool
+  validateInput: function(event) { 
+    // 1. ignore special keys except space (32)
+    // special keys have keycodes 0-48 
+    // meta = multiple keys pressed
     if(event.keyCode != 32 && (event.keyCode < 48 || event.key === "Meta")) {
       return false;
     }
-    // 2. a-z guesses only; a=65, z=90
+    // 2. a-z guesses only
+    // a=65, z=90 
     else if(event.keyCode < 65 || event.keyCode > 90){
       alert("Invalid key. Guess must be a letter a-z.");
       return false;
     }
-    // 3. wasn't guessed before or in the word
+    // 3. check wasn't guessed before 
     else if(setup.lettersGuessed.includes(event.key) || setup.wordProgressDisplay.includes(event.key)) {
       alert(event.key + " was already guessed; try another letter.");
       return false;
@@ -177,20 +181,18 @@ var gameplay = {
   },
 
   updateWordProgressDisplay: function(letter, index) {
-    // use: splice(index, how many to be removed, items to add)
+    // splice(index, how many to remove, items to add)
     setup.wordProgressDisplay.splice(index, 1, letter);
     browser.updateWordOnScreen();
-    // letters guessed shouldn't be updated: 
   },
 
   findIndexInWord: function(letter) {
     for(var i = 0; i < setup.computerChoice.length; i++) {
       if(letter === setup.computerChoice.charAt(i)) {
-        // insert @ index in wordProgressDisplay. 
-        // don't update letters guessed or guesses remaining.
+        // insert at index in wordProgressDisplay. 
         this.updateWordProgressDisplay(letter, i);
       }
-      // NOTE: don't break from for-loop even if we've found the letter, bc could be in the word multiple times
+      // !! NOTE: don't break from for-loop even if we've found the letter, bc could be in the word multiple times
     }
   },
 
@@ -206,9 +208,10 @@ var gameplay = {
 
   checkGuess: function(letter) {
     if(setup.computerChoice.includes(letter)){
+      // if in word (this fxn will call others)
       this.findIndexInWord(letter);
     } 
-    // if no, then add it to the "letters guessed array" 
+    // if no, add to the letters guessed array 
     else {
       this.updateLettersGuessed(letter);
       this.updateGuessesRemaining();
@@ -216,30 +219,38 @@ var gameplay = {
   },
 
   winLoseWatcher: function(){
-    // check if WIN (word is totally guessed (no blanks left))
+    // check if win: no blanks left
     if(!(setup.wordProgressDisplay.includes("__"))){
-      browser.instructionHidden = false; //show
-      browser.showHideInstruction(browser.winText); //show
-
+      // switch Bool
+      browser.instructionHidden = false; 
+      // show instruction
+      browser.showHideInstruction(browser.winText); 
+      // Play audio if applicable
       browser.updateAudio();
 
-      //update losses onscreen
+      // Update score 
       setup.winCounter++;
       browser.updateScoreOnScreen();
-      //start new game on keypress
+      // Update bool (for starting new game on keypress in document.keyup)
       setup.gameOver = true;
     } 
-    // check if LOSS (they haven't won and guesses remaining reaches 0)
+    // check if loss: 
+    // they haven't won and guesses remaining reaches 0
     else if(setup.guessesRemaining === 0) {
-      browser.instructionHidden = false; //show
-      browser.showHideInstruction(browser.loseText); //show
+      // switch bool
+      browser.instructionHidden = false; 
+      // show instruction 
+      browser.showHideInstruction(browser.loseText); 
+      // play audio if applicable 
       browser.updateAudio();
+
+      // show correct answer
       browser.revealAnswer();
-      //update losses onscreen 
+      //update score
       setup.lossCounter++;
       browser.updateScoreOnScreen();
 
-      //start new game on keypress 
+      //switch bools (for starting new game on keypress in document.onkeyup) 
       setup.gameOver = true;
     }
   }
@@ -252,42 +263,31 @@ setup.selectNewWord();
 setup.fillWithBlanks();
 browser.updateGuessesRemOnScreen();
 
-// tell game to pay attention to keyup event (user guesses letter)
+// tell game to pay attention to keyup event
+// user guesses letter
 document.onkeyup = function(e) { 
   if(setup.gameOver) {
+    // Bool true means special win/lose instruction is displayed and we want a new game on the next keypress, rather than treating it as a guess
+    
     setup.newGameReset();
   }
   else { 
-    // save key pressed as variable
+    // Bool false means it's a letter guess, not time for a new game
+
+    // save key pressed as var
     var playerGuess = e.key;
-    // just in case they capitalized guess
     var playerGuess = playerGuess.toLowerCase();
 
-    // check that key code is allowable. if so, returns true 
+    // validate input checks key code is allowable. 
+    // if so, returns true, else false
     if(gameplay.validateInput(e)){
-      browser.instructionHidden = true; //hide
+      // set var 
+      browser.instructionHidden = true; 
+      // hide instruction alert 
       browser.showHideInstruction(browser.welcomeText);
-
-      // process guess
+      // process guess, gameplay
       gameplay.checkGuess(playerGuess);
       gameplay.winLoseWatcher();
     }
   }
 }
-
-
-// //====== For All Inner HTML instead of getElement/textContent: ======
-// var html = "<h2>Press any key to get started</h2>" + 
-//           "<p>Wins: " + setup.winCounter + "</p>" + 
-//           "<p> Ok here's your word: " + setup.wordProgressDisplay.join(" ") + "</p>" + 
-//           "<p>Guesses Remaining: " + setup.guessesRemaining + "</p>" +
-//           "<p>Letters Guessed: " + setup.lettersGuessed+ "<p>";
-
-// document.querySelector("#game").innerHTML = html;
-
-
-
-
-// DO THESE LATER: 
-// pick a theme - update array with new words if necessary 
-// css styling

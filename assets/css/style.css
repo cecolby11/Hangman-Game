@@ -6,7 +6,7 @@
 
 footer {
   width: 100%;
-  height: 90px;
+  height: 80px;
   margin-top: 40px;
   text-align: center;
   font-size: smaller;
@@ -44,8 +44,8 @@ h1, h2, h3, h4, h5, h6 {
   padding-top: 10px;
 }
 .alert-info {
-  background: #b8c5a3;
-  color: #454E3A;
+  background: #B4E7D6;
+  color: #4B685E;
 }
 
 .game {
@@ -124,9 +124,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .button-audio {
   background: #96809B;
-  z-index: 2;
-  position: absolute;
-  right: 0;
+  float: right;
   font-size: 20px;
 }
 .button-audio .glyphicon{
