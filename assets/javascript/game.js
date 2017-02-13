@@ -95,9 +95,9 @@ var setup = {
   "lossCounter": 0,
   "gameOver":false,
   // array of words that fit the theme. words will be removed after use
-  "wordOptions": ["Dave Brubeck", "Duke Ellington", "Ella Fitzgerald", "Miles Davis", "John Coltrane", "Louis Armstrong", "Dizzy Gillespie", "Improvisation", "Rhythm", "Syncopation", "Take Five", "Satin Doll", "Autumn Leaves", "saxophone", "Freddie Freeloader"],
+  "wordOptions": ["Dave Brubeck", "Duke Ellington", "Ella Fitzgerald", "Miles Davis", "John Coltrane", "Louis Armstrong", "Dizzy Gillespie", "Improvisation", "Rhythm", "Syncopation", "Take Five", "Satin Doll", "Autumn Leaves", "saxophone", "Freddie Freeloader", "Watermelon Man"],
   // static version for replacing options after all used
-  "staticWordOptions": ["Dave Brubeck", "Duke Ellington", "Ella Fitzgerald", "Miles Davis", "John Coltrane", "Louis Armstrong", "Dizzy Gillespie", "Improvisation", "Rhythm", "Syncopation", "Take Five", "Satin Doll", "Autumn Leaves", "saxophone", "Freddie Freeloader"],
+  "staticWordOptions": ["Dave Brubeck", "Duke Ellington", "Ella Fitzgerald", "Miles Davis", "John Coltrane", "Louis Armstrong", "Dizzy Gillespie", "Improvisation", "Rhythm", "Syncopation", "Take Five", "Satin Doll", "Autumn Leaves", "saxophone", "Freddie Freeloader", "Watermelon Man"],
   //vars to store current computerChoice and index for removal later
   "computerChoice":"",
   "computerChoiceIndex":0,
@@ -268,7 +268,7 @@ browser.updateGuessesRemOnScreen();
 document.onkeyup = function(e) { 
   if(setup.gameOver) {
     // Bool true means special win/lose instruction is displayed and we want a new game on the next keypress, rather than treating it as a guess
-    
+
     setup.newGameReset();
   }
   else { 
