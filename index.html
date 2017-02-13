@@ -1,45 +1,139 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+  <title>Hangman</title>
   
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+  <!-- defer keyword means it isn't executed until html loads -->
+  <!-- otherwise errors bc getElementById needs html rendered first -->
+  <script type="text/javascript" src="assets/javascript/game.js" defer></script>
 </head>
 <body>
+<div class="page">
 
-<div id="welcome">
-<!-- inner html -->
-</div>
+  <header>
+    Let's play hangman! 
+  </header>
+
+  <!-- main container -->
+  <div class="container main_content">
+    
+
+    <!-- row 1 (instruction alert)-->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-info" role="alert"" id="instructionContainer">
+          <h4 id="instruction">Press a key to make your first guess!</h4>
+        </div>
+      </div>
+    </div>
+    <!-- /.row 1 (instruction alert) -->
+      
+
+    <!-- row 2 (content) -->
+    <div class="row">
+
+      <!-- game column-->
+      <div class="col-md-9">
+        <!-- panel -->
+        <div class= "panel panel-default panel-body game">
+          <!-- row-->
+          <div class="row">
+
+            <!-- word guessing col -->
+            <div class="col-md-9">
+              <div class="word">
+                <h3>I'm thinking of a word...</h3>
+                <p id="wordBeingGuessed"></p>
+              </div>
+            </div> 
+            <!-- /.word guessing col -->
+
+            <!-- guess/letters info col-->
+            <div class="col-md-3">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="guess remaining">
+                    <h4>Guesses Remaining</h4>
+                    <p id="guessesRemaining"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="guess letters">
+                    <h4>Letters guessed</h4>
+                    <p id="lettersGuessed"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /guess info col -->
+
+          </div>
+          <!-- /.row-->
+        </div> 
+        <!-- /.panel -->
+      </div> 
+      <!-- /.game column-->
 
 
-<!-- elements needed -->
-  <!-- press any key to get started -->
-  <h2 id="instruction">Press a key to make your first guess!</h2>
-  <!-- # of wins  -->
-  <div class="game">
-    <div>
-      <h3>Wins:</h3>
-      <h3 id="winsDisplay"></h3>
-    </div>
-    <!-- word being guessed -->
-    <div>
-      <h3>Ok here's your word:</h3>
-      <h3 id="wordBeingGuessed"></h3>
-    </div>
-    <!-- number guesses remaining -->
-    <div>
-      <h3>Guesses Remaining:</h3>
-      <h3 id="guessesRemaining"></h3>
-    </div>
-    <!-- letters already guessed -->
-    <div>
-      <h3>Letters guessed:</h3>
-      <h3 id="lettersGuessed"></h3>
-    </div>
-  </div> <!-- /.class game -->
+      <!-- score panel column-->
+      <div class="col-md-3">
+        <!-- panel -->
+        <div class="panel panel-default score-panel">
 
-<!-- put script at end because getElementById needs html to render BEFORE js script -->
-<script type="text/javascript" src="assets/javascript/game.js"></script>
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-md-6 col-xs-6">
+                <h3>Wins</h3>
+              </div>
+              <div class="col-md-6 col-xs-6">
+                <h3>Losses</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-6 col-xs-6 wins-col">
+                <h3 id="winsDisplay"></h3>
+              </div>
+              <div class="col-md-6 col-xs-6 losses-col">
+                <h3 id="lossesDisplay"></h3>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.panel -->
+      </div> 
+      <!-- /.score panel column-->
+
+
+    </div> 
+    <!-- /.row 2 (content) -->
+
+  </div> 
+  <!-- /.main container-->
+
+  <footer>
+    <div class="container">
+      <!-- row 2 -->
+      <div class="row"> 
+        <div class="col-md-12">
+          <!-- &#169; is character reference for copyright symbol -->
+          &#169; Copyright 2017 Casey Colby
+        </div>
+      </div> 
+      <!-- /.row 2 -->
+    </div> 
+    <!-- /.container -->
+
+  </footer>
+
+</div> <!-- /.page -->
 </body>
 </html>

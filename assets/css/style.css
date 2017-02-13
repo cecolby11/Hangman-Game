@@ -1,0 +1,85 @@
+.page{ /*don't style body tag*/
+  font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+  color: #a302c9;
+}
+
+header {
+  width: 100%;
+  height: 80px;
+  margin-bottom: 30px;
+  padding: 40px;
+  text-align: center;
+  background-color: #ccc;
+}
+
+footer {
+  width: 100%;
+  height: 80px;
+  margin-top: 40px;
+  text-align: center;
+  font-size: smaller;
+  padding: 33px;
+  background: #ccc;
+}
+
+.main_content {
+  margin: auto;
+  width: 90%;
+  min-height: 100%;
+}
+
+.panel {
+  border-radius: 0px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Georgia', Times, Times New Roman, serif;
+}
+
+/*game content elements*/
+
+.alert #instruction {
+  /*vertically center better*/
+  padding-top: 10px;
+}
+
+.game {
+  min-height: 300px;
+}
+
+.game .word {
+  font-size: x-large;
+}
+
+.game .guess {
+  min-height: 150px;
+  text-align: center;
+}
+
+.game h4 {
+  border-bottom: #ccc 2px solid;
+  padding: 15px;
+}
+.game p {
+  font-size: largea;
+}
+
+
+
+/*score panel elements */
+
+.score-panel {
+  text-align: center;
+}
+.score-panel .wins-col {
+  /*border between columns*/
+  border-right: 2px #eee solid;
+}
+.score-panel .panel-heading {
+  background: #fff;
+  color: #4a7d00;
+}
+.score-panel .panel-body {
+  background: #C2EE76;
+  color: #fff;
+}

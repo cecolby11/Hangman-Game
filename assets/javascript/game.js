@@ -8,9 +8,11 @@ var browser = {
   "loseText": "You're out of guesses! Press any key to begin a new game.",
   "winText": "Great job! Press any key to begin a new game.",
   
-  updateWinsOnScreen: function(){
-    var element = document.getElementById("winsDisplay");
-    element.textContent = setup.winCounter;
+  updateScoreOnScreen: function(){
+    var element1 = document.getElementById("winsDisplay");
+    element1.textContent = setup.winCounter;
+    var element2 = document.getElementById("lossesDisplay");
+    element2.textContent = setup.lossCounter;
   },
 
   updateWordOnScreen: function(){
@@ -30,13 +32,14 @@ var browser = {
   },
 
   showHideInstruction: function(text) {
-    var element = document.getElementById("instruction"); 
-    element.textContent = text;
+    var element1 = document.getElementById("instruction");
+    element1.textContent = text;
+    var element2 = document.getElementById("instructionContainer");
 
     if(this.instructionHidden){
-      element.style.visibility = "hidden";
+      element2.style.display = "none";
     } else {
-      element.style.visibility = "visible";
+      element2.style.display = "";
     }
   },
 
@@ -53,10 +56,12 @@ var setup = {
   "lettersGuessed": [],
   // array to hold blank spaces or letters for the word in question
   "wordProgressDisplay": [],
-  // var for number of guesses remaining. starts at 12. 
-  "guessesRemaining": 12,
-  //var to hold number of wins! starts at 0. 
+  // var for number of guesses remaining. starts at 10. 
+  "guessesRemaining": 10,
+  //vars for score; start at 0. 
   "winCounter": 0,
+  "lossCounter": 0,
+  "gameOver":false,
   // array of words that fit the theme. words will be removed after use
   "wordOptions": ["Dave Brubeck", "Duke Ellington", "Ella Fitzgerald", "Miles Davis", "John Coltrane", "Louis Armstrong", "Dizzy Gillespie", "Improvisation", "Rhythm", "Syncopation", "Take Five", "Satin Doll", "Autumn Leaves"],
   // static version for replacing options after all used
@@ -80,7 +85,7 @@ var setup = {
       if(this.computerChoice.charAt(i) === " ") {
         //preserve spaces! 
         // !!! spaces work in console log but ignored on display via textContent; to preserve, use \u00a0 no break spaces 
-        this.wordProgressDisplay.push("\u00a0\u00a0");
+        this.wordProgressDisplay.push("\u00a0\u00a0\u00a0");
       } else {
         this.wordProgressDisplay.push("__");
       }
@@ -107,20 +112,22 @@ var setup = {
     this.lettersGuessed = [];
     browser.updateLettersGuessedOnScreen();
 
-    this.guessesRemaining = 12;
+    this.guessesRemaining = 10;
     browser.updateGuessesRemOnScreen();
 
     this.wordProgressDisplay = [];
     this.selectNewWord();
     this.fillWithBlanks();
     browser.updateWordOnScreen();
+
+    setup.gameOver = false;
   }
 };
 
 var gameplay = {
   validateInput: function(event) {
-    // 1. ignore special keys; special function keys have keycodes 0-48, meta = multiple keys pressed
-    if(event.keyCode < 48 || event.key === "Meta"){
+    // 1. ignore special keys except space; special function keys have keycodes 0-48, meta = multiple keys pressed
+    if(event.keyCode != 32 && (event.keyCode < 48 || event.key === "Meta")) {
       return false;
     }
     // 2. a-z guesses only; a=65, z=90
@@ -183,12 +190,11 @@ var gameplay = {
       browser.instructionHidden = false; //show
       browser.showHideInstruction(browser.winText); //show
 
+      //update losses onscreen
       setup.winCounter++;
-      browser.updateWinsOnScreen();
+      browser.updateScoreOnScreen();
       //start new game on keypress
-      document.onkeyup = function(e) {
-        setup.newGameReset();
-      }
+      setup.gameOver = true;
     } 
     // check if LOSS (they haven't won and guesses remaining reaches 0)
     else if(setup.guessesRemaining === 0) {
@@ -196,10 +202,12 @@ var gameplay = {
       browser.showHideInstruction(browser.loseText); //show
 
       browser.revealAnswer();
+      //update losses onscreen 
+      setup.lossCounter++;
+      browser.updateScoreOnScreen();
+
       //start new game on keypress 
-      document.onkeyup = function(e) {
-        setup.newGameReset();
-      }
+      setup.gameOver = true;
     }
   }
 
@@ -209,23 +217,29 @@ var gameplay = {
 
 setup.selectNewWord();
 setup.fillWithBlanks();
+browser.updateGuessesRemOnScreen();
 
 // tell game to pay attention to keyup event (user guesses letter)
 document.onkeyup = function(e) { 
-  browser.instructionHidden = true; //hide
-  browser.showHideInstruction(browser.welcomeText);
+  if(setup.gameOver) {
+    setup.newGameReset();
+  }
+  else { 
+    browser.instructionHidden = true; //hide
+    browser.showHideInstruction(browser.welcomeText);
 
-  // save key pressed as variable
-  var playerGuess = e.key;
-  // just in case they capitalized guess
-  var playerGuess = playerGuess.toLowerCase();
-  console.log("player input: " + playerGuess);
+    // save key pressed as variable
+    var playerGuess = e.key;
+    // just in case they capitalized guess
+    var playerGuess = playerGuess.toLowerCase();
+    console.log("player input: " + playerGuess);
 
-  // check that key code is allowable. if so, returns true 
-  if(gameplay.validateInput(e)){
-    // process guess
-    gameplay.checkGuess(playerGuess);
-    gameplay.winLoseWatcher();
+    // check that key code is allowable. if so, returns true 
+    if(gameplay.validateInput(e)){
+      // process guess
+      gameplay.checkGuess(playerGuess);
+      gameplay.winLoseWatcher();
+    }
   }
 }
 
