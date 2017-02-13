@@ -107,6 +107,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /*photo*/
+
 .photo_narrow {
   overflow: auto;
   position: relative;
@@ -115,10 +116,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 .photo_narrow img{
   width: 100%;
-  max-height: 150px;
+  max-height: 180px;
   object-fit: cover;
 }
+
 /*audio*/
+
 .button-audio {
   background: #96809B;
   z-index: 2;
