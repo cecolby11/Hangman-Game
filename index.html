@@ -23,7 +23,6 @@
           <div class="col-md-12">
             <div class="photo_narrow">
               <img src="assets/images/vinyl.jpg" alt="vinyl photo">
-              <h2>Let's play hangman!</h2>
             </div>
           </div>
         </div>
@@ -140,6 +139,11 @@
         <div class="col-md-12">
           <!-- &#169; is character reference for copyright symbol -->
           &#169; Copyright 2017 Casey Colby
+          <audio id="audio">
+            <source id="audio_source" src="" type="audio/mpeg">
+          </audio>
+          <button class="button button-default btn-md 
+          button-audio" onclick="browser.muteAudio()"><span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span>/ <span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span></button>
         </div>
       </div> 
       <!-- /.row  -->

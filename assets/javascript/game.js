@@ -7,6 +7,7 @@ var browser = {
   "welcomeText": "Press a key to make your first guess!",
   "loseText": "You're out of guesses! Press any key to begin a new game.",
   "winText": "Great job! Press any key to begin a new game.",
+  "audioMuted": false,
   
   updateScoreOnScreen: function(){
     var element1 = document.getElementById("winsDisplay");
@@ -18,7 +19,7 @@ var browser = {
   updateWordOnScreen: function(){
     var element = document.getElementById("wordBeingGuessed");
     element.textContent = setup.wordProgressDisplay.join(" ");
-    element.style.color=""; //reset from red to css 
+    element.style.color = ""; //reset from red to the css instructions
   }, 
 
   updateGuessesRemOnScreen: function() {
@@ -47,6 +48,37 @@ var browser = {
     var element = document.getElementById("wordBeingGuessed");
     element.textContent = setup.computerChoice;
     element.style.color = "red";
+  },
+
+  updateAudio: function() {
+    var element1 = document.getElementById("audio_source");
+    var element2 = document.getElementById("audio");
+    if(this.audioMuted){
+      element2.volume = 0.0;
+    } else {
+      element2.volume = 0.1;
+    }
+
+    if(setup.computerChoice.toLowerCase()==="ella fitzgerald"){
+      element1.src = "assets/audio/The_Lady_Is_a_Tramp.m4a";
+      element2.load();
+      element2.play();
+    }
+    if(setup.computerChoice.toLowerCase()==="louis armstrong"){
+      element1.src = "assets/audio/Wonderful_World.m4a";
+      element2.load();
+      element2.play();
+    }
+  },
+
+  muteAudio: function() {
+    browser.audioMuted = !browser.audioMuted;
+    var element2 = document.getElementById("audio");
+    if(this.audioMuted){
+      element2.volume = 0.0;
+    } else {
+      element2.volume = 0.1;
+    }
   }
 
 };
@@ -76,7 +108,6 @@ var setup = {
     this.computerChoiceIndex = this.wordOptions.indexOf(this.computerChoice);
     // guesses will be lowercase, make computer choice lower after storing index. 
     this.computerChoice = this.computerChoice.toLowerCase();
-    console.log("computer choice: " + this.computerChoice);
   },
 
   fillWithBlanks: function() {
@@ -190,6 +221,8 @@ var gameplay = {
       browser.instructionHidden = false; //show
       browser.showHideInstruction(browser.winText); //show
 
+      browser.updateAudio();
+
       //update losses onscreen
       setup.winCounter++;
       browser.updateScoreOnScreen();
@@ -200,7 +233,7 @@ var gameplay = {
     else if(setup.guessesRemaining === 0) {
       browser.instructionHidden = false; //show
       browser.showHideInstruction(browser.loseText); //show
-
+      browser.updateAudio();
       browser.revealAnswer();
       //update losses onscreen 
       setup.lossCounter++;
@@ -229,7 +262,6 @@ document.onkeyup = function(e) {
     var playerGuess = e.key;
     // just in case they capitalized guess
     var playerGuess = playerGuess.toLowerCase();
-    console.log("player input: " + playerGuess);
 
     // check that key code is allowable. if so, returns true 
     if(gameplay.validateInput(e)){
