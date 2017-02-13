@@ -7,33 +7,37 @@
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 </head>
 <body>
-<h1>Open Console</h1>
 
-  <h1 id="game"></h1>
+<div id="welcome">
+<!-- inner html -->
+</div>
+
+
 <!-- elements needed -->
   <!-- press any key to get started -->
-  <h2>Press any key to get started</h2>
+  <h2 id="instruction">Press a key to make your first guess!</h2>
   <!-- # of wins  -->
-  <div>
-    <h3>Wins:</h3>
-    <h3 id="winsDisplay"></h3>
-  </div>
-  <!-- word being guessed -->
-  <div>
-    <h3>Ok here's your word:</h3>
-    <h3 id="wordBeingGuessed"></h3>
-  </div>
-  <!-- number guesses remaining -->
-  <div>
-    <h3>Guesses Remaining:</h3>
-    <h3 id="guessesRemaining"></h3>
-  </div>
-  <!-- letters already guessed -->
-  <div>
-    <h3>Letters guessed:</h3>
-    <h3 id="lettersGuessed"></h3>
-  </div>
-  <!-- theme styling -->
+  <div class="game">
+    <div>
+      <h3>Wins:</h3>
+      <h3 id="winsDisplay"></h3>
+    </div>
+    <!-- word being guessed -->
+    <div>
+      <h3>Ok here's your word:</h3>
+      <h3 id="wordBeingGuessed"></h3>
+    </div>
+    <!-- number guesses remaining -->
+    <div>
+      <h3>Guesses Remaining:</h3>
+      <h3 id="guessesRemaining"></h3>
+    </div>
+    <!-- letters already guessed -->
+    <div>
+      <h3>Letters guessed:</h3>
+      <h3 id="lettersGuessed"></h3>
+    </div>
+  </div> <!-- /.class game -->
 
 <!-- put script at end because getElementById needs html to render BEFORE js script -->
 <script type="text/javascript" src="assets/javascript/game.js"></script>

@@ -1,9 +1,12 @@
 // ==== game objects ====
 
-// object with properties/functions for on-screen things
+// on-screen things
 var browser = {
 
   "instructionHidden": false,
+  "welcomeText": "Press a key to make your first guess!",
+  "loseText": "You're out of guesses! Press any key to begin a new game.",
+  "winText": "Great job! Press any key to begin a new game.",
   
   updateWinsOnScreen: function(){
     var element = document.getElementById("winsDisplay");
@@ -13,6 +16,7 @@ var browser = {
   updateWordOnScreen: function(){
     var element = document.getElementById("wordBeingGuessed");
     element.textContent = setup.wordProgressDisplay.join(" ");
+    element.style.color=""; //reset from red to css 
   }, 
 
   updateGuessesRemOnScreen: function() {
@@ -25,18 +29,25 @@ var browser = {
     element.textContent = setup.lettersGuessed;
   },
 
-  showHideInstruction: function() {
-    var element = document.getElementById("welcomeInstruction"); 
+  showHideInstruction: function(text) {
+    var element = document.getElementById("instruction"); 
+    element.textContent = text;
+
     if(this.instructionHidden){
       element.style.visibility = "hidden";
     } else {
       element.style.visibility = "visible";
     }
+  },
+
+  revealAnswer: function() {
+    var element = document.getElementById("wordBeingGuessed");
+    element.textContent = setup.computerChoice;
+    element.style.color = "red";
   }
 
 };
 
-//new game object (properties/functions for resetting)
 var setup = {
   // array to hold letters guessed
   "lettersGuessed": [],
@@ -47,9 +58,9 @@ var setup = {
   //var to hold number of wins! starts at 0. 
   "winCounter": 0,
   // array of words that fit the theme. words will be removed after use
-  "wordOptions": ["Dave Brubeck", "the Duke"],
+  "wordOptions": ["Dave Brubeck", "Duke Ellington", "Ella Fitzgerald", "Miles Davis", "John Coltrane", "Louis Armstrong", "Dizzy Gillespie", "Improvisation", "Rhythm", "Syncopation", "Take Five", "Satin Doll", "Autumn Leaves"],
   // static version for replacing options after all used
-  "staticWordOptions": ["Dave Brubeck", "the Duke"],
+  "staticWordOptions": ["Dave Brubeck", "Duke Ellington", "Ella Fitzgerald", "Miles Davis", "John Coltrane", "Louis Armstrong", "Dizzy Gillespie", "Improvisation", "Rhythm", "Syncopation", "Take Five", "Satin Doll", "Autumn Leaves"],
   //vars to store current computerChoice and index for removal later
   "computerChoice":"",
   "computerChoiceIndex":0,
@@ -90,8 +101,8 @@ var setup = {
     } 
 
     //reset game variables and update on screen EXCEPT winCounter
-    browser.instructionHidden = false;
-    browser.showHideInstruction();
+    browser.instructionHidden = false; //show
+    browser.showHideInstruction(browser.welcomeText);
 
     this.lettersGuessed = [];
     browser.updateLettersGuessedOnScreen();
@@ -169,16 +180,26 @@ var gameplay = {
   winLoseWatcher: function(){
     // check if WIN (word is totally guessed (no blanks left))
     if(!(setup.wordProgressDisplay.includes("__"))){
+      browser.instructionHidden = false; //show
+      browser.showHideInstruction(browser.winText); //show
+
       setup.winCounter++;
       browser.updateWinsOnScreen();
-      //start new game
-      setup.newGameReset();
+      //start new game on keypress
+      document.onkeyup = function(e) {
+        setup.newGameReset();
+      }
     } 
     // check if LOSS (they haven't won and guesses remaining reaches 0)
     else if(setup.guessesRemaining === 0) {
-      console.log("YOU LOSE :(");
-      //start new game
-      setup.newGameReset();
+      browser.instructionHidden = false; //show
+      browser.showHideInstruction(browser.loseText); //show
+
+      browser.revealAnswer();
+      //start new game on keypress 
+      document.onkeyup = function(e) {
+        setup.newGameReset();
+      }
     }
   }
 
@@ -190,9 +211,9 @@ setup.selectNewWord();
 setup.fillWithBlanks();
 
 // tell game to pay attention to keyup event (user guesses letter)
-document.onkeyup = function(e) {
-  browser.instructionHidden = true;
-  browser.showHideInstruction();
+document.onkeyup = function(e) { 
+  browser.instructionHidden = true; //hide
+  browser.showHideInstruction(browser.welcomeText);
 
   // save key pressed as variable
   var playerGuess = e.key;
@@ -207,7 +228,6 @@ document.onkeyup = function(e) {
     gameplay.winLoseWatcher();
   }
 }
-
 
 
 // //====== For All Inner HTML instead of getElement/textContent: ======
