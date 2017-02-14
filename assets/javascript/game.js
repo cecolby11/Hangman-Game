@@ -18,7 +18,7 @@ var browser = {
 
   updateWordOnScreen: function(){
     var element = document.getElementById("wordBeingGuessed");
-    element.textContent = setup.wordProgressDisplay.join(" ").toUpperCase();
+    element.textContent = setup.wordProgressDisplay.join(" ");
     element.style.color = ""; //reset from red to the css instructions
   }, 
 
@@ -47,7 +47,7 @@ var browser = {
 
   revealAnswer: function() {
     var element = document.getElementById("wordBeingGuessed");
-    element.textContent = setup.computerChoice.toUpperCase();
+    element.textContent = setup.computerChoice;
     element.style.color = "red";
   },
 
